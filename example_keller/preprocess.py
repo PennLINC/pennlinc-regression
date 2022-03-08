@@ -13,7 +13,7 @@ data_path: path to the actual features
 phenotypes: path to a csv with the to-be-predicted and the noise
 """
 data_path ='/gpfs/fs001/cbica/projects/abcdfnets/results/SingleParcel_1by1/sub-NDAR{0}/IndividualParcel_Final_sbj1_comp17_alphaS21_1_alphaL300_vxInfo1_ard0_eta0/final_UV.mat'
-control =['sex','meanFD','abcd_site']
+control =['sex','meanFD','abcd_site','interview_age']
 network = sys.argv[1]
 outdir = sys.argv[2]
 os.makedirs(outdir,exist_ok=True)

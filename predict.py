@@ -4,7 +4,7 @@ import numpy as np
 import os
 import pandas as pd
 from sklearn.linear_model import RidgeCV
-from sklearn.model_selection import KFold
+from sklearn.model_selection import GroupKFold
 from sklearn.linear_model import LinearRegression
 from sklearn import preprocessing
 import sys
@@ -18,6 +18,7 @@ feature_path: path to the actual features, should be a subject x features npy ar
 phenotype_path: path to a csv with the to-be-predicted values
 phenotype_name: str of name of column in phenotype_path you want
 control_path: path to csv, regress these features from the features within each fold
+fold_group: most datasets have siblings/twins, represented as a family ID column, this names that column and prevents them from being split in train/test
 """
 folds = 10
 working_dir = sys.argv[1]
@@ -26,7 +27,7 @@ feature_path = sys.argv[2]
 phenotype_path = sys.argv[3] 
 phenotype_name = sys.argv[4] #'thompson_PC1'
 control_path = sys.argv[5]
-
+fold_group = sys.argv[6]
 """
 load the subject measures you want to control for
 """
@@ -38,15 +39,16 @@ features = np.load(feature_path).astype(np.float16)
 """
 this is adapted from pennlinckit.utils.predict
 """
-model_cv = KFold(folds)
+model_cv = GroupKFold(n_splits=folds)
 targets = pd.read_csv(phenotype_path)[phenotype_name].values.astype(np.float16)
+fold_group = pd.read_csv(phenotype_path)[fold_group].values.astype(np.float16)
 np.save('/{0}/{1}_targets.npy'.format(working_dir,phenotype_name),targets)
 assert targets.shape[0] == features.shape[0]
 prediction = np.zeros((targets.shape))
 coefs = np.zeros((folds,features.shape[1]))
 alphas = np.zeros((folds))
 fold = 0
-for train, test in model_cv.split(np.arange(targets.shape[0])):
+for train, test in model_cv.split(features,targets,fold_group)):
     x_train,y_train,x_test,y_test = features[train].copy(),targets[train].copy(),features[test].copy(),targets[test].copy() #split up the data by train/test
     nuisance_model = LinearRegression() #make the nuisance model object
     nuisance_model.fit(phenotypes_control.values[train],x_train) #fit the nuisance_model to training data
