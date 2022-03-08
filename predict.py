@@ -48,7 +48,7 @@ prediction = np.zeros((targets.shape))
 coefs = np.zeros((folds,features.shape[1]))
 alphas = np.zeros((folds))
 fold = 0
-for train, test in model_cv.split(features,targets,fold_group)):
+for train, test in model_cv.split(features,targets,fold_group):
     x_train,y_train,x_test,y_test = features[train].copy(),targets[train].copy(),features[test].copy(),targets[test].copy() #split up the data by train/test
     nuisance_model = LinearRegression() #make the nuisance model object
     nuisance_model.fit(phenotypes_control.values[train],x_train) #fit the nuisance_model to training data
