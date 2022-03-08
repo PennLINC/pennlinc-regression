@@ -19,7 +19,7 @@ phenotype_path: path to a csv with the to-be-predicted values
 phenotype_name: str of name of column in phenotype_path you want
 control_path: path to csv, regress these features from the features within each fold
 """
-folds = 20
+folds = 10
 working_dir = sys.argv[1]
 os.makedirs(working_dir,exist_ok=True)
 feature_path = sys.argv[2] 
@@ -40,6 +40,7 @@ this is adapted from pennlinckit.utils.predict
 """
 model_cv = KFold(folds)
 targets = pd.read_csv(phenotype_path)[phenotype_name].values.astype(np.float16)
+np.save('/{0}/{1}_targets.npy'.format(working_dir,phenotype_name),targets)
 assert targets.shape[0] == features.shape[0]
 prediction = np.zeros((targets.shape))
 coefs = np.zeros((folds,features.shape[1]))
@@ -51,7 +52,7 @@ for train, test in model_cv.split(np.arange(targets.shape[0])):
     nuisance_model.fit(phenotypes_control.values[train],x_train) #fit the nuisance_model to training data
     x_train = x_train - nuisance_model.predict(phenotypes_control.values[train]) #remove nuisance from training data
     x_test = x_test - nuisance_model.predict(phenotypes_control.values[test]) #remove nuisance from test data
-    m = RidgeCV(cv=5,alphas=(1,10,100,500,1000,5000,10000,15000)) #make the actual ridge model object, adding some super high reg strengths because we have so many features
+    m = RidgeCV(cv=10,alphas=(1,10,100,500,1000,5000,10000,15000)) #make the actual ridge model object, adding some super high reg strengths because we have so many features
     m.fit(x_train,y_train) # fit the ridge model
     coefs[fold] = m.coef_.astype(np.float16)
     alphas[fold] = m.alpha_
