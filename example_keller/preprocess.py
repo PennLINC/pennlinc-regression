@@ -56,4 +56,4 @@ np.save('/{0}/features_{1}.npy'.format(outdir,network),features.astype(np.float1
 
 
 phenotypes[control].to_csv('/{0}/phenotypes_control.csv'.format(outdir))
-phenotypes[['thompson_PC1','thompson_PC2','thompson_PC3']].to_csv('/{0}/phenotypes_target.csv'.format(outdir))
+phenotypes[['thompson_PC1','thompson_PC2','thompson_PC3','rel_family_id']].to_csv('/{0}/phenotypes_target.csv'.format(outdir))
