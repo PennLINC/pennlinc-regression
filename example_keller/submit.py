@@ -16,6 +16,7 @@ networks = np.append(networks,np.arange(0,17))
 for network in networks:
     if network == 'all': 
         GB = '200G'
+        continue
     else: GB = '124G'
     
     for cog_score in ['thompson_PC1','thompson_PC2','thompson_PC3']:

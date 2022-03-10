@@ -54,7 +54,7 @@ for train, test in model_cv.split(features,targets,fold_group):
     nuisance_model.fit(phenotypes_control.values[train],x_train) #fit the nuisance_model to training data
     x_train = x_train - nuisance_model.predict(phenotypes_control.values[train]) #remove nuisance from training data
     x_test = x_test - nuisance_model.predict(phenotypes_control.values[test]) #remove nuisance from test data
-    m = RidgeCV(cv=10,alphas=(1,10,100,500,1000,5000,10000,15000)) #make the actual ridge model object, adding some super high reg strengths because we have so many features
+    m = RidgeCV(alphas=(1,10,100,500,1000,5000,10000,15000,20000)) #make the actual ridge model object, adding some super high reg strengths because we have so many features
     m.fit(x_train,y_train) # fit the ridge model
     coefs[fold] = m.coef_.astype(np.float16)
     alphas[fold] = m.alpha_
